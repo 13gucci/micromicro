@@ -45,7 +45,7 @@ router.post('/posts/:post_id/comments', async (req, res) => {
     await axios.post('http://localhost:4005/events', {
         type: 'CommentCreated',
         data: {
-            id: newComment._id,
+            _id: newComment._id,
             content: newComment.content,
             postId: post_id,
         },
@@ -71,5 +71,5 @@ router.get('/test', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`[Comment]:: is running on ${port}`);
+    console.log(`[Comment - ${port}]:: is running`);
 });

@@ -29,6 +29,7 @@ router.post('/posts', async (req, res) => {
     const newPost = {
         _id,
         title,
+        comments: [],
     };
 
     posts[_id] = newPost;
@@ -59,5 +60,5 @@ router.get('/test', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`[Post]:: is running on ${port}`);
+    console.log(`[Post - ${port}]:: is running`);
 });

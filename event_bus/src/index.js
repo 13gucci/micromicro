@@ -17,8 +17,13 @@ app.use(router);
 router.post('/events', async (req, res) => {
     const event = req.body;
 
+    // Post Services
     await axios.post('http://localhost:4000/events', event);
+
+    // Comment Services
     await axios.post('http://localhost:4001/events', event);
+
+    // Query Services
     await axios.post('http://localhost:4002/events', event);
 
     res.send({ status: 'OK' });
