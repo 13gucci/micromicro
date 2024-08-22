@@ -1,11 +1,15 @@
 const express = require('express');
 const axios = require('axios');
+const cors = require('cors');
+const morgan = require('morgan');
 const app = express();
 const router = express.Router();
 
-const port = 4002;
+const port = 4005;
 
 // Middleware
+app.use(cors());
+// app.use(morgan('dev'));
 app.use(express.json());
 app.use(router);
 
@@ -22,5 +26,5 @@ router.post('/events', async (req, res) => {
 
 // Check health
 app.listen(port, () => {
-    console.log(`Event bus still running on port ${port}`);
+    console.log(`[Event bus]:: running on port ${port}`);
 });

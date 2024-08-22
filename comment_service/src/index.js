@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const { randomBytes } = require('node:crypto');
-
+const axios = require('axios');
 const app = express();
 const port = 4001;
 const router = express.Router();
@@ -12,7 +12,7 @@ const commentsByPostId = {};
 
 // Middleware
 app.use(cors());
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 app.use(express.json());
 app.use(router);
 
@@ -23,7 +23,7 @@ router.get('/posts/:post_id/comments', (req, res) => {
     res.status(200).json(commentsByPostId[post_id] ?? []);
 });
 
-router.post('/posts/:post_id/comments', (req, res) => {
+router.post('/posts/:post_id/comments', async (req, res) => {
     const { post_id } = req.params;
     const { content } = req.body;
     const _id = randomBytes(4).toString('hex');
@@ -41,10 +41,27 @@ router.post('/posts/:post_id/comments', (req, res) => {
         commentsByPostId[post_id] = [...oldComments, newComment];
     }
 
+    // Publish to Event Bus
+    await axios.post('http://localhost:4005/events', {
+        type: 'CommentCreated',
+        data: {
+            id: newComment._id,
+            content: newComment.content,
+            postId: post_id,
+        },
+    });
+
     res.status(201).json({
         message: 'Created success comment',
         data: commentsByPostId[post_id],
     });
+});
+
+// Register event
+router.post('/events', (req, res) => {
+    console.log('Received Event:: ', req.body.type);
+
+    res.send({});
 });
 
 router.get('/test', (req, res) => {
@@ -54,5 +71,5 @@ router.get('/test', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`App is running on ${port}`);
+    console.log(`[Comment]:: is running on ${port}`);
 });
