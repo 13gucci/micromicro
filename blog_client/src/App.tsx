@@ -7,7 +7,7 @@ function App() {
             <h1>Create Post</h1>
             <PostCreate />
             <hr />
-            <div style={{ display: 'flex', gap: 12 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
                 <PostList />
             </div>
         </>

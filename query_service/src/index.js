@@ -48,5 +48,5 @@ router.post('/events', (req, res) => {
 
 //Check health
 app.listen(port, () => {
-    console.log(`[Query - ${port}]:: is running`);
+    console.log(`[QUERY- ${port}]::running`);
 });

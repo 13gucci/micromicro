@@ -60,5 +60,5 @@ router.get('/test', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`[Post - ${port}]:: is running`);
+    console.log(`[POST - ${port}]::running`);
 });

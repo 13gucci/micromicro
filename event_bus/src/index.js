@@ -9,7 +9,6 @@ const port = 4005;
 
 // Middleware
 app.use(cors());
-// app.use(morgan('dev'));
 app.use(express.json());
 app.use(router);
 
@@ -17,14 +16,12 @@ app.use(router);
 router.post('/events', async (req, res) => {
     const event = req.body;
 
-    // Post Services
-    await axios.post('http://localhost:4000/events', event);
-
-    // Comment Services
-    await axios.post('http://localhost:4001/events', event);
-
-    // Query Services
-    await axios.post('http://localhost:4002/events', event);
+    await Promise.all([
+        axios.post('http://localhost:4000/events', event),
+        axios.post('http://localhost:4001/events', event),
+        axios.post('http://localhost:4002/events', event),
+        axios.post('http://localhost:4003/events', event),
+    ]);
 
     res.send({ status: 'OK' });
 });

@@ -71,5 +71,5 @@ router.get('/test', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`[Comment - ${port}]:: is running`);
+    console.log(`[COMMENT - ${port}]::running`);
 });
