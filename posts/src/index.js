@@ -61,5 +61,6 @@ router.get('/test', (req, res) => {
 });
 
 app.listen(port, () => {
+    console.log('New update 2024 v44');
     console.log(`[POST - ${port}]::running`);
 });
