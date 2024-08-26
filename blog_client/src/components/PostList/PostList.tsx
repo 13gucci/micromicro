@@ -6,6 +6,7 @@ import CommentList from './components/CommentList';
 export type Comment = {
     _id: string;
     content: string;
+    status: string;
 };
 
 type Post = {

@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const axios = require('axios');
 const app = express();
 const router = express.Router();
 const port = 4002;
@@ -18,35 +19,67 @@ router.get('/posts', (req, res) => {
     res.status(200).json(posts_w_comments);
 });
 
+const handleEvents = (event) => {
+    const { type, data } = event;
+
+    switch (type) {
+        case 'PostCreated': {
+            const { _id, title } = data;
+            posts_w_comments[_id] = {
+                _id,
+                title,
+                comments: [],
+            };
+            break;
+        }
+        case 'CommentCreated': {
+            const { _id, content, postId, status } = data;
+            const post = posts_w_comments[postId];
+
+            post.comments.push({
+                _id: _id,
+                content,
+                status,
+            });
+            break;
+        }
+        case 'CommentUpdated': {
+            const { postId, _id, content, status } = data;
+
+            const comments = posts_w_comments[postId].comments;
+
+            const comment = comments.find((cmt) => cmt._id === _id);
+
+            comment.status = status;
+            comment.content = content;
+            break;
+        }
+        default:
+            break;
+    }
+};
+
 // Register event
 router.post('/events', (req, res) => {
     console.log('Received Event:: ', req.body.type);
-    const { type, data } = req.body;
 
-    if (type === 'PostCreated') {
-        const { _id, title } = data;
-        posts_w_comments[_id] = {
-            _id,
-            title,
-            comments: [],
-        };
-    }
+    handleEvents(req.body);
 
-    if (type === 'CommentCreated') {
-        const { _id, content, postId } = data;
-        const post = posts_w_comments[postId];
-
-        post.comments.push({
-            _id: _id,
-            content,
-        });
-    }
-
-    console.log(posts_w_comments);
     res.send({});
 });
 
-//Check health
-app.listen(port, () => {
-    console.log(`[QUERY- ${port}]::running`);
+//Check health & Get missing Services
+app.listen(port, async () => {
+    console.log('Listening on 4002');
+    try {
+        const res = await axios.get('http://localhost:4005/events');
+
+        for (let event of res.data) {
+            console.log('Processing event:', event.type);
+
+            handleEvents(event);
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
 });

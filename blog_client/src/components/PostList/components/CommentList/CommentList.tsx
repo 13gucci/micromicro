@@ -9,7 +9,13 @@ export default function CommentList({ comments }: Props) {
         <div>
             <ul>
                 {comments.map((item) => (
-                    <li key={item._id}>{item.content}</li>
+                    <li key={item._id}>
+                        {item.status === 'Approved'
+                            ? item.content
+                            : item.status === 'Pending'
+                            ? 'Pending status'
+                            : 'Rejected'}
+                    </li>
                 ))}
             </ul>
         </div>

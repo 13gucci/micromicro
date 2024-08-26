@@ -22,6 +22,7 @@ router.get('/posts', (req, res) => {
     res.status(200).json(posts);
 });
 
+// Create Post
 router.post('/posts', async (req, res) => {
     const { title } = req.body;
     const _id = randomBytes(4).toString('hex');
@@ -34,7 +35,7 @@ router.post('/posts', async (req, res) => {
 
     posts[_id] = newPost;
 
-    // Publish to Event Bus
+    // Emit an event to Event Bus
     await axios.post('http://localhost:4005/events', {
         type: 'PostCreated',
         data: newPost,
@@ -42,7 +43,7 @@ router.post('/posts', async (req, res) => {
 
     res.status(201).json({
         message: 'Create new post success',
-        data: posts[_id],
+        data: newPost,
     });
 });
 

@@ -8,22 +8,29 @@ const router = express.Router();
 const port = 4005;
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+app .use(express.json());
 app.use(router);
 
-// Routing
-router.post('/events', async (req, res) => {
-    const event = req.body;
+// Database
+const events = []; 
 
-    await Promise.all([
-        axios.post('http://localhost:4000/events', event),
-        axios.post('http://localhost:4001/events', event),
-        axios.post('http://localhost:4002/events', event),
-        axios.post('http://localhost:4003/events', event),
-    ]);
+// Routing
+app.post('/events', (req, res) => {
+    const event = req.body;
+    //Save events to db
+    events.push(event);
+    console.log(events);
+    axios.post('http://localhost:4000/events', event).catch((err) => console.log(err));
+    axios.post('http://localhost:4001/events', event).catch((err) => console.log(err));
+    axios.post('http://localhost:4002/events', event).catch((err) => console.log(err));
+    axios.post('http://localhost:4003/events', event).catch((err) => console.log(err));
 
     res.send({ status: 'OK' });
+});
+
+// Get all events from event store
+app.get('/events', (req, res) => {
+    res.send(events);
 });
 
 // Check health
